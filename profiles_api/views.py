@@ -1,8 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, viewsets
+from rest_framework import status, viewsets, filters
+from rest_framework.authentication import TokenAuthentication
 
-from profiles_api import serializers
+from profiles_api import serializers, models, permissions
 
 
 class HelloApiView(APIView):
@@ -12,14 +13,13 @@ class HelloApiView(APIView):
     def get(self, request, format=None):
         """Returns a list of APIView features"""
         an_apiview = [
-        'Used HTTP methods as function (get, post, put, patch, delete)'
-        'Is similar to a traditional Django View',
-        'Gives you the most control over your application logic',
-        'Is mapped manually to URLs',
+            'Used HTTP methods as function (get, post, put, patch, delete)'
+            'Is similar to a traditional Django View',
+            'Gives you the most control over your application logic',
+            'Is mapped manually to URLs',
         ]
 
-        return Response({'message': 'Hello!','an_apiview': an_apiview })
-
+        return Response({'message': 'Hello!', 'an_apiview': an_apiview})
 
     def post(self, request):
         """Create a hello message with our name"""
@@ -47,6 +47,7 @@ class HelloApiView(APIView):
         """Delet an object"""
         return Response({'method': 'DELETE'})
 
+
 class HelloViewSet(viewsets.ViewSet):
     """Test API ViewSet"""
     serializer_class = serializers.HelloSerializer
@@ -55,9 +56,9 @@ class HelloViewSet(viewsets.ViewSet):
         """Return a Hello Message"""
 
         a_viewset = [
-        'User actions (list, create, retrieve, update, partial_update)',
-        'Automatically maps URLs using Routers',
-        'Provides more functionality with less code',
+            'User actions (list, create, retrieve, update, partial_update)',
+            'Automatically maps URLs using Routers',
+            'Provides more functionality with less code',
         ]
 
         return Response({'message': 'Hello', 'a_viewset': a_viewset})
@@ -91,3 +92,14 @@ class HelloViewSet(viewsets.ViewSet):
     def destroy(self, request, pk=None):
         """Handle deleting an object"""
         return Response({'http_method': "DELETE"})
+
+
+class UserProfileViewSet(viewsets.ModelViewSet):
+    """Handle createing and updating profiles"""
+
+    serializer_class = serializers.UserProfileSerializer
+    queryset = models.UserProfile.objects.all()
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (permissions.UpdateOwnProfile,)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name', 'email',)
