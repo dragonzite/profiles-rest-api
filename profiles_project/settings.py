@@ -26,7 +26,7 @@ SECRET_KEY = '&0v*hh=6sdc-2v6ebmf3@n&2%ei05_0+!&27ox%o!o2p5lp40z'
 DEBUG = bool(int(os.environ.get('DEBUG', 1)))
 
 ALLOWED_HOSTS = ['roadsidemanager.com', 'localhost',
-                 'www.roadsidemanager.com', 'deb4a31.online-server.cloud']
+                 'www.roadsidemanager.com', 'deb4a31.online-server.cloud', '217.160.27.218']
 
 
 # Application definition
